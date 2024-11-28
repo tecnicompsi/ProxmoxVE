@@ -36,7 +36,7 @@
             "type": "Info"
         },
         {
-            "text": "The CIDR list can modify here: `nano /usr/local/etc/iptag.conf`",
+            "text": "Configuration: `nano /usr/local/etc/iptag.conf`. iptag.service must be restarted after change.",
             "type": "Info"
         }
     ]
