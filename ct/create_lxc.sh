@@ -2,6 +2,7 @@
 
 # Copyright (c) 2021-2024 tteck
 # Author: tteck (tteckster)
+# Revision 1.0 (MickLesk 12/2024)
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
@@ -9,15 +10,27 @@
 # if [ "$VERBOSE" == "yes" ]; then set -x; fi
 
 # This function sets color variables for formatting output in the terminal
+# Colors
 YW=$(echo "\033[33m")
+YWB=$(echo "\033[93m")
 BL=$(echo "\033[36m")
 RD=$(echo "\033[01;31m")
+BGN=$(echo "\033[4;92m")
 GN=$(echo "\033[1;92m")
+DGN=$(echo "\033[32m")
+
+# Formatting
 CL=$(echo "\033[m")
-CM="${GN}✓${CL}"
-CROSS="${RD}✗${CL}"
+UL=$(echo "\033[4m")
+BOLD=$(echo "\033[1m")
 BFR="\\r\\033[K"
 HOLD=" "
+TAB="  "
+
+# Icons
+CM="${TAB}✔️${TAB}${CL}"
+CROSS="${TAB}✖️${TAB}${CL}"
+INFO="${TAB}💡${TAB}${CL}"
 
 # This sets error handling options and defines the error_handler function to handle errors
 set -Eeuo pipefail
@@ -36,21 +49,26 @@ function error_handler() {
 
 # This function displays a spinner.
 function spinner() {
-    local chars="/-\|"
+    local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
     local spin_i=0
-    printf "\e[?25l"
+    local interval=0.1
+    printf "\e[?25l" 
+
+    local color="${YWB}"
+
     while true; do
-        printf "\r \e[36m%s\e[0m" "${chars:spin_i++%${#chars}:1}"
-        sleep 0.1
+        printf "\r ${color}%s${CL}" "${frames[spin_i]}"
+        spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
+        sleep "$interval"
     done
 }
 
 # This function displays an informational message with a yellow color.
 function msg_info() {
   local msg="$1"
-  echo -ne " ${HOLD} ${YW}${msg}   "
-  spinner &
-  SPINNER_PID=$!
+  echo -ne " ${TAB}${YW}${msg}   "
+  spinner & 
+  SPINNER_PID=$! 
 }
 
 # This function displays a success message with a green color.
@@ -58,7 +76,7 @@ function msg_ok() {
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local msg="$1"
-  echo -e "${BFR} ${CM} ${GN}${msg}${CL}"
+  echo -e "${BFR}${CM}${GN}${msg}${CL}"
 }
 
 # This function displays a error message with a red color.
@@ -66,7 +84,7 @@ function msg_error() {
   if [ -n "$SPINNER_PID" ] && ps -p $SPINNER_PID > /dev/null; then kill $SPINNER_PID > /dev/null; fi
   printf "\e[?25h"
   local msg="$1"
-  echo -e "${BFR} ${CROSS} ${RD}${msg}${CL}"
+  echo -e "${BFR}${CROSS}${RD}${msg}${CL}"
 }
 
 # This checks for the presence of valid Container Storage and Template Storage locations
@@ -119,7 +137,7 @@ function select_storage() {
   else
     local STORAGE
     while [ -z "${STORAGE:+x}" ]; do
-      STORAGE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "Storage Pools" --radiolist \
+      STORAGE=$(whiptail --backtitle "ProxmoxVE Community-Scripts" --title "Storage Pools" --radiolist \
       "Which storage pool you would like to use for the ${CONTENT_LABEL,,}?\nTo make a selection, use the Spacebar.\n" \
       16 $(($MSG_MAX_LENGTH + 23)) 6 \
       "${MENU[@]}" 3>&1 1>&2 2>&3) || exit "Menu aborted."
