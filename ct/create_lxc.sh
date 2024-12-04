@@ -2,7 +2,7 @@
 
 # Copyright (c) 2021-2024 tteck
 # Author: tteck (tteckster)
-# Revision 1.0 (MickLesk 12/2024)
+# Co-Author: MickLesk
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
