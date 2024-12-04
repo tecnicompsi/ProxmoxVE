@@ -1,6 +1,6 @@
 # Copyright (c) 2021-2024 tteck
 # Author: tteck (tteckster)
-# Revision 1.0 (MickLesk 12/2024)
+# Co-Author: MickLesk
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
@@ -16,7 +16,7 @@ color() {
   # Formatting
   CL=$(echo "\033[m")
   BFR="\\r\\033[K"
-  BOLD=$(echo "\033[1m")						
+  BOLD=$(echo "\033[1m")
   TAB="  "
   
   # System
@@ -27,12 +27,12 @@ color() {
   CM="${TAB}✔️${TAB}${CL}"
   CROSS="${TAB}✖️${TAB}${CL}"
   INFO="${TAB}💡${TAB}${CL}"
-  NETWORK="${TAB}📡${TAB}${CL}"								 
+  NETWORK="${TAB}📡${TAB}${CL}"
   OS="${TAB}🖥️${TAB}${CL}"
   OSVERSION="${TAB}🌟${TAB}${CL}"
   HOSTNAME="${TAB}🏠${TAB}${CL}"
   GATEWAY="${TAB}🌐${TAB}${CL}"
-  DEFAULT="${TAB}⚙️${TAB}${CL}"			   								 
+  DEFAULT="${TAB}⚙️${TAB}${CL}"
 }
 
 # This function enables IPv6 if it's not disabled and sets verbose mode if the global variable is set to "yes"
@@ -69,26 +69,26 @@ error_handler() {
 
 # This function displays a spinner.
 spinner() {
-    local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
-    local spin_i=0
-    local interval=0.1
-    printf "\e[?25l" 
+  local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+  local spin_i=0
+  local interval=0.1
+  printf "\e[?25l"
 
-    local color="${YWB}"
+  local color="${YWB}"
 
-    while true; do
-        printf "\r ${color}%s${CL}" "${frames[spin_i]}"
-        spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
-        sleep "$interval"
-    done
+  while true; do
+    printf "\r ${color}%s${CL}" "${frames[spin_i]}"
+    spin_i=$(( (spin_i + 1) % ${#frames[@]} ))
+    sleep "$interval"
+  done
 }
 
 # This function displays an informational message with a yellow color.
 msg_info() {
-    local msg="$1"
-    echo -ne " ${TAB}${YW}${msg}   "
-    spinner & 
-    SPINNER_PID=$!  
+  local msg="$1"
+  echo -ne " ${TAB}${YW}${msg}"
+  spinner & 
+  SPINNER_PID=$!
 }
 
 # This function displays a success message with a green color.
@@ -142,8 +142,6 @@ network_check() {
   ipv4_connected=false
   ipv6_connected=false
   sleep 1
-  sysctl -w net.ipv6.conf.all.disable_ipv6=0  &>/dev/nul
-  sysctl -w net.ipv6.conf.default.disable_ipv6=0  &>/dev/nul
 # Check IPv4 connectivity
   if ping -c 1 -W 1 1.1.1.1 &>/dev/null || ping -c 1 -W 1 8.8.8.8 &>/dev/null || ping -c 1 -W 1 9.9.9.9 &>/dev/null; then 
     msg_ok "IPv4 Internet Connected";
@@ -192,26 +190,16 @@ fi
 EOF
   chmod +x /usr/local/bin/apt-proxy-detect.sh
   fi
-  if grep -qEi "debian|ubuntu" /etc/os-release; then
-     $STD apt-get update
-     $STD apt-get -o Dpkg::Options::="--force-confold" -y dist-upgrade
-   # RPM-based systems
-   elif grep -qEi "fedora|centos|rocky|almalinux" /etc/os-release; then
-     $STD dnf -y upgrade
-   # openSUSE
-   elif grep -qEi "opensuse" /etc/os-release; then
-     $STD zypper -n update
-   else
-     msg_error "Unsupported OS detected!"
-     exit 1
-   fi
+  $STD apt-get update
+  $STD apt-get -o Dpkg::Options::="--force-confold" -y dist-upgrade
+  rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
   msg_ok "Updated Container OS"
 }
 
 # This function modifies the message of the day (motd) and SSH settings
 motd_ssh() {
-  # Set terminal to 256-color mode if not already set
-  grep -qxF "export TERM='xterm-256color'" /root/.bashrc || echo "export TERM='xterm-256color'" >> /root/.bashrc
+  # Set terminal to 256-color mode
+  echo "export TERM='xterm-256color'" >>/root/.bashrc
 
   # Get the current private IP address
   IP=$(hostname -I | awk '{print $1}')  # Private IP
