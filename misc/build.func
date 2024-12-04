@@ -235,6 +235,7 @@ echo_default() {
   echo -e "${DISKSIZE}${BOLD}${DGN}Disk Size: ${BGN}${DISK_SIZE}GB${CL}"
   echo -e "${CPUCORE}${BOLD}${DGN}CPU Cores: ${BGN}${CORE_COUNT}${CL}"
   echo -e "${RAMSIZE}${BOLD}${DGN}RAM Size: ${BGN}${RAM_SIZE}MB${CL}"
+  echo -e "${CONTAINERID}${BOLD}${DGN}Container ID: ${BGN}${CT_ID}${CL}"
   # Include VERBOSE if enabled
   if [ "$VERB" == "yes" ]; then
     echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}Enabled${CL}"
@@ -246,14 +247,8 @@ echo_default() {
 # This function is called when the user decides to exit the script. It clears the screen and displays an exit message.
 exit_script() {
   clear
+  echo -e "\n" 
   echo -e "${CROSS}${RD}User exited script${CL}\n"
-  
-  # Stop any running spinner
-  if [ -n "$SPINNER_PID" ] && kill -0 "$SPINNER_PID" 2>/dev/null; then
-    kill "$SPINNER_PID"
-    wait "$SPINNER_PID" 2>/dev/null
-  fi
-  
   exit
 }
 
@@ -311,6 +306,9 @@ advanced_settings() {
     done
   fi
 
+  # Setting Default Tag for Advanced Settings
+  TAGS="community-script;"
+
   CT_TYPE=""
   while [ -z "$CT_TYPE" ]; do
     if CT_TYPE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "CONTAINER TYPE" --radiolist "Choose Type" 10 58 2 \
@@ -318,6 +316,10 @@ advanced_settings() {
       "0" "Privileged" OFF \
       3>&1 1>&2 2>&3); then
       if [ -n "$CT_TYPE" ]; then
+      CT_TYPE_DESC="Privileged"
+        if [ "$CT_TYPE" -eq 1 ]; then
+        CT_TYPE_DESC="Unprivileged"
+      fi
         echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
       fi
     else
@@ -562,7 +564,7 @@ advanced_settings() {
   else
     VERB="no"
   fi
-  echo -e "${SEARCH}${DGN}Enable Verbose Mode: ${BGN}$VERB${CL}"
+  echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}$VERB${CL}"
 
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "Ready to create ${APP} LXC?" 10 58); then
     echo -e "${CREATING}${BOLD}${RD}Creating a ${APP} LXC using the above advanced settings${CL}"
