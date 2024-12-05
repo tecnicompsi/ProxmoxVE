@@ -49,7 +49,7 @@ verb_ip6() {
   fi
 }
 
-# This function sets error handling options and defines the error_handler function to handle errors
+# This function catches errors and handles them with the error handler function
 catch_errors() {
   set -Eeuo pipefail
   trap 'error_handler $LINENO "$BASH_COMMAND"' ERR
@@ -168,7 +168,7 @@ motd_ssh() {
   fi
 }
 
-# This function customizes the container and enabling the passwordless login for the root user
+# This function customizes the container and enables passwordless login for the root user
 customize() {
   if [[ "$PASSWORD" == "" ]]; then
   msg_info "Customizing Container"

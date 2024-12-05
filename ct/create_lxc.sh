@@ -66,7 +66,7 @@ function spinner() {
 # This function displays an informational message with a yellow color.
 function msg_info() {
   local msg="$1"
-  echo -ne " ${TAB}${YW}${msg}"
+  echo -ne "${TAB}${YW}${msg}"
   spinner &
   SPINNER_PID=$!
 }
@@ -123,7 +123,7 @@ function select_storage() {
     local TAG=$(echo $line | awk '{print $1}')
     local TYPE=$(echo $line | awk '{printf "%-10s", $2}')
     local FREE=$(echo $line | numfmt --field 4-6 --from-unit=K --to=iec --format %.2f | awk '{printf( "%9sB", $6)}')
-    local ITEM="  Type: $TYPE Free: $FREE "
+    local ITEM="Type: $TYPE Free: $FREE "
     local OFFSET=2
     if [[ $((${#ITEM} + $OFFSET)) -gt ${MSG_MAX_LENGTH:-} ]]; then
       local MSG_MAX_LENGTH=$((${#ITEM} + $OFFSET))
