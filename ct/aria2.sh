@@ -5,6 +5,7 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://aria2.github.io/
 
+# App Default Values
 APP="Aria2"
 TAGS="download-utility"
 var_cpu="2"

@@ -4,29 +4,18 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
-function header_info {
-clear
-cat <<"EOF"
-                     ____            __                                      
-                    / __ \____  ____/ /___ ___  ____ _____                   
-                   / /_/ / __ \/ __  / __  __ \/ __  / __ \                  
-                  / ____/ /_/ / /_/ / / / / / / /_/ / / / /                  
-    __  __       /_/    \____/\__,_/_/ /_/ /_/\__,_/_/ /_/__              __ 
-   / / / /___  ____ ___  ___     /   |  __________(_)____/ /_____ _____  / /_
-  / /_/ / __ \/ __  __ \/ _ \   / /| | / ___/ ___/ / ___/ __/ __  / __ \/ __/
- / __  / /_/ / / / / / /  __/  / ___ |(__  |__  ) (__  ) /_/ /_/ / / / / /_  
-/_/ /_/\____/_/ /_/ /_/\___/  /_/  |_/____/____/_/____/\__/\__,_/_/ /_/\__/  
- 
-EOF
-}
-header_info
+# App Default Values
 APP="Podman-Home Assistant"
+TAGS="podman;smarthome"
 var_cpu="2"
 var_ram="2048"
 var_disk="16"
 var_os="debian"
 var_version="12"
 var_unprivileged="1"
+
+# App Output & Base Settings
+header_info "$APP"
 base_settings
 
 # Core 
