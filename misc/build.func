@@ -91,7 +91,7 @@ spinner() {
 # This function displays an informational message with a yellow color.
 msg_info() {
   local msg="$1"
-  echo -ne " ${TAB}${YW}${msg}"
+  echo -ne "${TAB}${YW}${msg}"
   spinner &
   SPINNER_PID=$!
 }
@@ -203,8 +203,8 @@ base_settings() {
   SSH="no"
   TAGS="community-script;"
   
-  # Changed From CT.sh 
-  CT_TYPE=${var_unprivileged:-$CT_TYPE}
+  # Override default settings with variables from ct script
+  CT_TYPE=${var_privileged:-$CT_TYPE}
   DISK_SIZE=${var_disk:-$DISK_SIZE}
   CORE_COUNT=${var_cpu:-$CORE_COUNT}
   RAM_SIZE=${var_ram:-$RAM_SIZE}
@@ -223,9 +223,9 @@ base_settings() {
 # This function displays the default values for various settings.
 echo_default() {
   # Convert CT_TYPE to description
-  CT_TYPE_DESC="Privileged"
-  if [ "$CT_TYPE" -eq 1 ]; then
-    CT_TYPE_DESC="Unprivileged"
+  CT_TYPE_DESC="Unprivileged"
+  if [ "$CT_TYPE" -eq 0 ]; then
+    CT_TYPE_DESC="Privileged"
   fi
 
   # Output the selected values with icons
@@ -236,7 +236,6 @@ echo_default() {
   echo -e "${CPUCORE}${BOLD}${DGN}CPU Cores: ${BGN}${CORE_COUNT}${CL}"
   echo -e "${RAMSIZE}${BOLD}${DGN}RAM Size: ${BGN}${RAM_SIZE}MB${CL}"
   echo -e "${CONTAINERID}${BOLD}${DGN}Container ID: ${BGN}${CT_ID}${CL}"
-  # Include VERBOSE if enabled
   if [ "$VERB" == "yes" ]; then
     echo -e "${SEARCH}${BOLD}${DGN}Verbose Mode: ${BGN}Enabled${CL}"
   fi
@@ -247,8 +246,7 @@ echo_default() {
 # This function is called when the user decides to exit the script. It clears the screen and displays an exit message.
 exit_script() {
   clear
-  echo -e "\n" 
-  echo -e "${CROSS}${RD}User exited script${CL}\n"
+  echo -e "\n${CROSS}${RD}User exited script${CL}\n"
   exit
 }
 
@@ -293,10 +291,10 @@ advanced_settings() {
     while [ -z "$var_version" ]; do
       if var_version=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "UBUNTU VERSION" --radiolist "Choose Version" 10 58 4 \
         "20.04" "Focal" OFF \
-		    "22.04" "Jammy" OFF \
-		    "24.04" "Noble" OFF \
-		    "24.10" "Oracular" OFF \
-		  3>&1 1>&2 2>&3); then
+        "22.04" "Jammy" OFF \
+        "24.04" "Noble" OFF \
+        "24.10" "Oracular" OFF \
+      3>&1 1>&2 2>&3); then
         if [ -n "$var_version" ]; then
           echo -e "${OSVERSION}${BOLD}${DGN}Version: ${BGN}$var_version${CL}"
         fi
@@ -316,10 +314,10 @@ advanced_settings() {
       "0" "Privileged" OFF \
       3>&1 1>&2 2>&3); then
       if [ -n "$CT_TYPE" ]; then
-      CT_TYPE_DESC="Privileged"
-        if [ "$CT_TYPE" -eq 1 ]; then
         CT_TYPE_DESC="Unprivileged"
-      fi
+        if [ "$CT_TYPE" -eq 0 ]; then
+          CT_TYPE_DESC="Privileged"
+        fi
         echo -e "${CONTAINERTYPE}${BOLD}${DGN}Container Type: ${BGN}$CT_TYPE_DESC${CL}"
       fi
     else
@@ -592,7 +590,7 @@ install_script() {
   if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "SETTINGS" --yesno "Use Default Settings?" --no-button Advanced 10 58); then
     header_info
     echo -e "${DEFAULT}${BOLD}${BL}Using Default Settings${CL}"
-	  base_settings
+    base_settings
     echo_default
   else
     header_info
