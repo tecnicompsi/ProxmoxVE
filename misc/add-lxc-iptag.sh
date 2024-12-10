@@ -4,7 +4,7 @@
 # Author: MickLesk (Canbiz)
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
-# Original-Source: https://github.com/gitsang/lxc-iptag
+# Source: https://github.com/gitsang/lxc-iptag
 
 function header_info {
   clear
