@@ -41,6 +41,11 @@ $STD apt-get install -y \
   mysql-community-client \
   mysql-community-server
 msg_ok "Installed MySQL"
+msg_info "Configurando lower_case_table_names"
+echo "[mysqld]" >> /etc/mysql/my.cnf
+echo "lower_case_table_names = 1" >> /etc/mysql/my.cnf
+msg_ok "Configuración de lower_case_table_names completada"
+
 
 msg_info "Configure MySQL Server"
 ADMIN_PASS="$(openssl rand -base64 18 | cut -c1-13)"
