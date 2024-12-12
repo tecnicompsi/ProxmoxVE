@@ -27,6 +27,8 @@ msg_ok "Installed Dependencies"
 msg_info "Configurando lower_case_table_names"
 # Create the directory if it doesn't exist
 mkdir -p /etc/mysql/mysql.conf.d
+chmod 755 /etc/mysql/mysql.conf.d
+
 # Now create the my.cnf file
 cat << EOF > /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
