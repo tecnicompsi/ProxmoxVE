@@ -32,6 +32,10 @@ if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
       RELEASE_AUTH="caching_sha2_password"
 fi
 
+msg_info "Configurando lower_case_table_names"
+echo "[mysqld]" >> /etc/mysql/my.cnf
+echo "lower_case_table_names = 1" >> /etc/mysql/my.cnf
+msg_ok "Configuración de lower_case_table_names completada"
 msg_info "Installing MySQL"
 curl -fsSL https://repo.mysql.com/RPM-GPG-KEY-mysql-2023 | gpg --dearmor  -o /usr/share/keyrings/mysql.gpg
 echo "deb [signed-by=/usr/share/keyrings/mysql.gpg] http://repo.mysql.com/apt/debian $(lsb_release -sc) ${RELEASE_REPO}" >/etc/apt/sources.list.d/mysql.list
@@ -41,11 +45,6 @@ $STD apt-get install -y \
   mysql-community-client \
   mysql-community-server
 msg_ok "Installed MySQL"
-msg_info "Configurando lower_case_table_names"
-echo "[mysqld]" >> /etc/mysql/my.cnf
-echo "lower_case_table_names = 1" >> /etc/mysql/my.cnf
-msg_ok "Configuración de lower_case_table_names completada"
-
 
 msg_info "Configure MySQL Server"
 ADMIN_PASS="$(openssl rand -base64 18 | cut -c1-13)"
