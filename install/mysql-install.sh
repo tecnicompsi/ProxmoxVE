@@ -24,14 +24,6 @@ $STD apt-get install -y \
   mc
 msg_ok "Installed Dependencies"
 
-RELEASE_REPO="mysql-8.0"
-RELEASE_AUTH="mysql_native_password"
-read -r -p "Would you like to install the MySQL 8.4 LTS release instead of MySQL 8.0 (bug fix track; EOL April-2026)? <y/N> " prompt
-if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
-      RELEASE_REPO="mysql-8.4-lts"
-      RELEASE_AUTH="caching_sha2_password"
-fi
-
 msg_info "Configurando lower_case_table_names"
 # Create the directory if it doesn't exist
 mkdir -p /etc/mysql
@@ -43,6 +35,15 @@ character-set-server = utf8mb4
 collation-server = utf8mb4_unicode_ci
 EOF
 msg_ok "Configuración de lower_case_table_names completada"
+
+RELEASE_REPO="mysql-8.0"
+RELEASE_AUTH="mysql_native_password"
+read -r -p "Would you like to install the MySQL 8.4 LTS release instead of MySQL 8.0 (bug fix track; EOL April-2026)? <y/N> " prompt
+if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
+      RELEASE_REPO="mysql-8.4-lts"
+      RELEASE_AUTH="caching_sha2_password"
+fi
+
 msg_info "Installing MySQL"
 curl -fsSL https://repo.mysql.com/RPM-GPG-KEY-mysql-2023 | gpg --dearmor  -o /usr/share/keyrings/mysql.gpg
 echo "deb [signed-by=/usr/share/keyrings/mysql.gpg] http://repo.mysql.com/apt/debian $(lsb_release -sc) ${RELEASE_REPO}" >/etc/apt/sources.list.d/mysql.list
