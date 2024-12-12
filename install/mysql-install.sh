@@ -33,6 +33,7 @@ if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
 fi
 
 msg_info "Configurando lower_case_table_names"
+touch /etc/mysql/my.cnf
 echo "[mysqld]" >> /etc/mysql/my.cnf
 echo "lower_case_table_names = 1" >> /etc/mysql/my.cnf
 msg_ok "Configuración de lower_case_table_names completada"
