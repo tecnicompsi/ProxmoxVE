@@ -33,7 +33,9 @@ if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
 fi
 
 msg_info "Configurando lower_case_table_names"
-# Create the my.cnf file
+# Create the directory if it doesn't exist
+mkdir -p /etc/mysql
+# Now create the my.cnf file
 cat << EOF > /etc/mysql/my.cnf
 [mysqld]
 lower_case_table_names = 1
