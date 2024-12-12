@@ -28,8 +28,12 @@ msg_info "Configurando lower_case_table_names"
 # Create the directory if it doesn't exist
 mkdir -p /etc/mysql
 # Now create the my.cnf file
-cat << EOF > /etc/mysql/my.cnf
+cat << EOF > /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
+pid-file        = /var/run/mysqld/mysqld.pid
+socket          = /var/run/mysqld/mysqld.sock
+datadir         = /var/lib/mysql
+log-error       = /var/log/mysql/error.log
 lower_case_table_names = 1
 character-set-server = utf8mb4
 collation-server = utf8mb4_unicode_ci
