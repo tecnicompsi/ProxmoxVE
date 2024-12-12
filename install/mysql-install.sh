@@ -33,9 +33,13 @@ if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
 fi
 
 msg_info "Configurando lower_case_table_names"
-touch /etc/mysql/my.cnf
-echo "[mysqld]" >> /etc/mysql/my.cnf
-echo "lower_case_table_names = 1" >> /etc/mysql/my.cnf
+# Create the my.cnf file
+cat << EOF > /etc/mysql/my.cnf
+[mysqld]
+lower_case_table_names = 1
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+EOF
 msg_ok "Configuración de lower_case_table_names completada"
 msg_info "Installing MySQL"
 curl -fsSL https://repo.mysql.com/RPM-GPG-KEY-mysql-2023 | gpg --dearmor  -o /usr/share/keyrings/mysql.gpg
