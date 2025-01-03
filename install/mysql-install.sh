@@ -39,8 +39,10 @@ log-error       = /var/log/mysql/error.log
 lower_case_table_names = 1
 character-set-server = utf8mb4
 collation-server = utf8mb4_unicode_ci
+sql_mode=STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
 EOF
 msg_ok "Configuración de lower_case_table_names completada"
+msg_ok "Configuración de sql_mode completada"
 
 RELEASE_REPO="mysql-8.0"
 RELEASE_AUTH="mysql_native_password"
